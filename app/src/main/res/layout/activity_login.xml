@@ -1,0 +1,118 @@
+<!-- login_screen -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_scree"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/round_corner">
+    <ImageView
+        android:src="@drawable/login_figma"
+        android:id="@+id/im1"
+        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+    <Button
+        android:id="@+id/guestlogin"
+        android:onClick="guestLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_close_black_24dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        app:iconTint="#C0C0C0"
+        android:layout_marginRight="-36dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rel1"
+        android:layout_centerInParent="true">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/filledTextField1"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            app:hintAnimationEnabled="true"
+            app:hintTextColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:layout_marginEnd="32dp"
+            app:boxStrokeColor="#FFFFFF"
+            android:hint="E-mail">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailEditTextLI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:textColor="#FFFFFF"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/filledTextField2"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            app:hintAnimationEnabled="true"
+            app:hintTextColor="#FFFFFF"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#F9F6EE"
+            app:boxStrokeColor="#FFFFFF"
+            android:layout_below="@+id/filledTextField1"
+            android:textColorHint="#FFFFFF"
+            android:hint="Password">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordEditTextLI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColor="#FFFFFF"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/forgotP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/forgotpass"
+            android:layout_marginTop="-15dp"
+            android:layout_marginRight="-8dp"
+            android:layout_below="@id/filledTextField2"
+            android:layout_alignRight="@id/filledTextField2"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:onClick="forgotPassword"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+    </RelativeLayout>
+    <Button
+        android:id="@+id/gotosignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/signup"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:textAllCaps="false"
+        android:layout_centerHorizontal="true"
+        android:textColor="#FFFFFF"
+        android:onClick="gotosignupscreen"
+        style="@style/Widget.MaterialComponents.Button.TextButton"/>
+    <Button
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_below="@id/rel1"
+        android:text="LogIn"
+        app:strokeColor="#673AB7"
+        android:textColor="#FFFFFF"
+        android:layout_centerHorizontal="true"
+        android:onClick="loginToApp"/>
+
+</RelativeLayout>
+
+

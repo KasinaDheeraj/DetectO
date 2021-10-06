@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="7dp"
+    android:layout_marginTop="7dp"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardBackgroundColor="#D0D0D0"
+    android:elevation="4dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/card_view_del"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="-6dp"
+            android:layout_marginEnd="8dp"
+            android:text="Delete"
+            android:textColor="#673AB7" />
+        <TextView
+            android:id="@+id/card_view_Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/card_view_del"
+            android:textStyle="bold"
+            android:hint="TITLE"
+            android:layout_marginStart="6dp"
+            android:layout_marginBottom="6dp"
+            android:maxLines="1"
+            android:textSize="16sp"
+            android:textAllCaps="true"/>
+        <View
+            android:id="@+id/linediv"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/card_view_Title"
+            android:background="#000000"/>
+        <TextView
+            android:id="@+id/card_view_body"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scrollbars="none"
+            android:maxLines="6"
+            android:minLines="2"
+            android:hint="DESCRIPTION"
+            android:padding="6dp"
+            android:layout_below="@id/linediv"/>
+        <TextView
+            android:id="@+id/card_view_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1048768501353",
+    "project_id": "detecto-12576",
+    "storage_bucket": "detecto-12576.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048768501353:android:0f803a03db063f6a89f4f8",
+        "android_client_info": {
+          "package_name": "com.example.detecto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1048768501353-mnl1433hoidl770as8d0p099tvcqicpl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrNpZbzVCYwvN_g-q4v4ZhKQaG5w3YjyA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048768501353-mnl1433hoidl770as8d0p099tvcqicpl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

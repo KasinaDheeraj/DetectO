@@ -1,0 +1,117 @@
+<!-- login_screen -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_scree"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/round_corner">
+    <ImageView
+        android:src="@drawable/login_figma"
+        android:id="@+id/im1"
+        android:scaleType="fitXY"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+    <RelativeLayout
+        android:id="@+id/rel2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/supname"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            app:hintAnimationEnabled="true"
+            app:hintTextColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:layout_marginEnd="32dp"
+            app:boxStrokeColor="#FFFFFF"
+            android:hint="Name">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameEditTextSU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:textColor="#FFFFFF"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/filledTextField1"
+            android:layout_below="@+id/supname"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            app:hintAnimationEnabled="true"
+            app:hintTextColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:layout_marginEnd="32dp"
+            app:boxStrokeColor="#FFFFFF"
+            android:hint="E-mail">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailEditTextSU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:textColor="#FFFFFF"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/supfilledTextField2"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            app:hintAnimationEnabled="true"
+            app:hintTextColor="#FFFFFF"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="#F9F6EE"
+            app:boxStrokeColor="#FFFFFF"
+            android:layout_below="@+id/filledTextField1"
+            android:textColorHint="#FFFFFF"
+
+            android:hint="Password">
+
+            <!--this is the actual edit text which takes the input-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordEditTextSU"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColor="#FFFFFF"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </RelativeLayout>
+    <Button
+        android:id="@+id/gotosignin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/signin"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:textAllCaps="false"
+        android:layout_centerHorizontal="true"
+        android:textColor="#FFFFFF"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:onClick="goToLogin"/>
+    <Button
+        android:id="@+id/Signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_below="@id/rel2"
+        android:text="Register"
+        app:strokeColor="#673AB7"
+        android:textColor="#FFFFFF"
+        android:layout_centerHorizontal="true"
+        android:onClick="signUp"/>
+</RelativeLayout>
+
+
