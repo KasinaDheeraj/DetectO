@@ -6,17 +6,20 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".MainActivity">
-
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
     <Button
         android:id="@+id/readfromim"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/readcapture"
-        android:padding="8dp"
-        android:layout_marginRight="-2dp"
         android:layout_marginBottom="4dp"
-        android:text="Read from Image"
+        android:text="Read from\nImage"
         android:textColor="#FFFFFF"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp"
@@ -28,20 +31,23 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="4dp"
         android:layout_marginLeft="6dp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="Read using camera"
+        android:layout_alignBottom="@+id/readfromim"
+        android:text="Read using\ncamera"
         android:textColor="#FFFFFF"
         tools:layout_editor_absoluteX="161dp"
         tools:layout_editor_absoluteY="16dp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:strokeColor="#FFFFFF"/>
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/readcapture"
+        android:layout_below="@+id/ll"
         android:scrollbars="vertical"/>
 </RelativeLayout>
