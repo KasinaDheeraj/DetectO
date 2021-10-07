@@ -37,6 +37,7 @@ public class MyDatabase {
                 body.add(cursor.getString(2));
             }
         }
+        cursor.close();
         db.close();
         MainActivity.DBResult dbr=new MainActivity.DBResult(ids,Titles,body);
         return dbr;

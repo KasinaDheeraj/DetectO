@@ -1,7 +1,6 @@
 package com.example.detecto.adapter;
 
 import android.content.Intent;
-import android.net.sip.SipSession;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

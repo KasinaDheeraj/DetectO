@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/tesseract/";
 
     TessBaseAPI tessBaseAPI;
+    ProgressDialog loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onStart() {
         super.onStart();
         setUpRecyclerView("");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(loading!=null)
+            loading.dismiss();
     }
 
     public static class DBResult{
@@ -150,15 +159,22 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .start(this);
-
+        loading=new ProgressDialog(MainActivity.this);
+        loading.setCancelable(false);
+        loading.setMessage("Extracting Text...");
+        loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loading.show();
+            }
+        },1000);
     }
 
     public void startImageActivity(){
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getPackageManager()) != null) {
             // Bring up gallery to select a photo
             startActivityForResult(intent, PICK_PHOTO_CODE);
@@ -180,43 +196,21 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }else if ((data != null) && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
 
-            // Load the image located at photoUri into selectedImage
-//            Bitmap selectedImage = loadFromUri(photoUri);
-//            bitMArray.add(selectedImage);
             CropImage.activity(photoUri)
                     .start(MainActivity.this);
+            loading=new ProgressDialog(MainActivity.this);
+            loading.setCancelable(false);
+            loading.setMessage("Extracting Text...");
+            loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            loading.show();
         }
     }
-//    public Bitmap loadFromUri(Uri photoUri) {
-//        Bitmap imagee = null;
-//        try {
-//            // check version of Android on device
-//            if(Build.VERSION.SDK_INT > 27){
-//                // on newer versions of Android, use the new decodeBitmap method
-//                ImageDecoder.Source source = ImageDecoder.createSource(this.getContentResolver(), photoUri);
-//                imagee = ImageDecoder.decodeBitmap(source);
-//            } else {
-//                // support older versions of Android by using getBitmap
-//                imagee = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return imagee;
-//    }
+
     public void startOCR(Uri imageUri){
-        ProgressDialog loading=new ProgressDialog(MainActivity.this);
-        loading.setCancelable(false);
-        loading.setMessage("Extracting Text...");
-        loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        loading.show();
         try{
             BitmapFactory.Options options = new BitmapFactory.Options();
-            //options.inJustDecodeBounds=false;
             options.inSampleSize = 4;
-            Bitmap bitmap =BitmapFactory.decodeFile(imageUri.getPath(), options);//Bitmap bitmap = loadFromUri(imageUri);//
-                                             //Log.e("STARTocr","initializing gettext");
-            //Log.e("startOCR",imageUri.getPath());
+            Bitmap bitmap =BitmapFactory.decodeFile(imageUri.getPath(), options);
             try {
                 ExifInterface exif = new ExifInterface(imageUri.getPath());
                 int exifOrientation = exif.getAttributeInt(
@@ -265,10 +259,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             //The extraction which takes time so we use progress dialog
             String result = getTextTesseract(bitmap);
 
-            //Log.e("STARTocr",result+"###");
-            //Log.e("startOCR",new File(imageUri.getPath()).exists()+"");
             if(result.equals("")){result ="No Text Detected!";}
-                                            //Log.e("STARTocr","completed get text");
+
             Intent intent =new Intent(this, TextActivity.class);
             Bundle extras=new Bundle();
             extras.putString("TITLE","");
@@ -320,7 +312,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     }
                     in.close();
                     out.close();
-                                    //Log.e("prep", "Copied to tessdata");
             } catch (IOException e) {
                 Log.e("tag", "Failed to copy asset file: " + lang
                         + ".traineddata", e);
@@ -344,6 +335,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(this, LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
+        }else if(item.getItemId()==R.id.addItemmenu){
+            Intent intent =new Intent(MainActivity.this,TextActivity.class);
+            Bundle extras=new Bundle();
+            extras.putString("TITLE","");
+            extras.putString("BODY","Description");
+            extras.putInt("id",-1);
+            intent.putExtras(extras);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

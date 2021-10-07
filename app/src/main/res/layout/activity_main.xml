@@ -25,7 +25,6 @@
         tools:layout_editor_absoluteY="16dp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         app:strokeColor="#FFFFFF"/>
-
     <Button
         android:id="@+id/readcapture"
         android:layout_alignParentRight="true"

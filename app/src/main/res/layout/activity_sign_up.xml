@@ -76,7 +76,6 @@
             app:boxStrokeColor="#FFFFFF"
             android:layout_below="@+id/filledTextField1"
             android:textColorHint="#FFFFFF"
-
             android:hint="Password">
 
             <!--this is the actual edit text which takes the input-->
