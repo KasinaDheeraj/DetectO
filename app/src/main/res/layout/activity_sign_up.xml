@@ -16,6 +16,7 @@
         android:id="@+id/rel2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="60dp"
         android:layout_centerInParent="true">
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/supname"
@@ -107,6 +108,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_below="@id/rel2"
         android:text="Register"
+        android:layout_marginTop="-60dp"
         app:strokeColor="#673AB7"
         android:textColor="#FFFFFF"
         android:layout_centerHorizontal="true"
