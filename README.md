@@ -16,3 +16,5 @@
 - Tesseract API.
 
 ### **Screenshots**
+<img src="https://user-images.githubusercontent.com/58620100/136394000-25812528-a545-44cc-83b3-2509cd304d0e.jpg" height="550" /><img src="https://user-images.githubusercontent.com/58620100/136394011-837c908a-39ec-4bf1-b698-1b887846750c.jpg" height="550" />
+<img src="https://user-images.githubusercontent.com/58620100/136394014-d3438b87-92bb-4e5c-bb88-d8bd8a18c175.jpg" height="550" /><img src="https://user-images.githubusercontent.com/58620100/136394017-e3a14dd5-4a29-4f8e-a617-d75b2bb2d656.jpg" height="550" />
