@@ -46,8 +46,11 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
 
     //tess-two
-    implementation 'com.rmtheis:tess-two:9.1.0'
+    //implementation 'com.rmtheis:tess-two:9.1.0'
     implementation 'com.google.android.material:material:1.4.0'
-    api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    //api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    implementation 'com.github.CanHub:Android-Image-Cropper:3.3.5'
+
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:17.0.0'
 
 }

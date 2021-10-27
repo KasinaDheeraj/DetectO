@@ -13,6 +13,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
                 +"_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 +"Title TEXT,"
                 +"Description TEXT);");
+        db.execSQL("INSERT INTO DETECTEDT(Title,Description) VALUES ('TAKING NOTE','Click on + icon.'),('SEARCH','Click on search and type the keyword.'),('DETECT TEXT','Click on Read from Image for detecting from a pre-existing image.\n" +
+                "\n" +
+                "Click on Read using camera for detecting through camera capture.')");
     }
 
     @Override

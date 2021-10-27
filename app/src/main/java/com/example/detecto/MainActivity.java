@@ -1,6 +1,7 @@
 package com.example.detecto;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,7 +18,12 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -26,8 +32,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -35,12 +43,22 @@ import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageView;
 import com.example.detecto.adapter.RVAdapter;
 import com.example.detecto.data.MyDatabase;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.googlecode.tesseract.android.TessBaseAPI;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
+//import com.googlecode.tesseract.android.TessBaseAPI;
+//import com.theartofdev.edmodo.cropper.CropImage;
+//import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,10 +70,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private final int PICK_PHOTO_CODE=100;
-    private static final String TESS_DATA = "tessdata";
-    private static final String DATA_PATH = Environment.getExternalStorageDirectory().toString() + "/tesseract/";
-
-    TessBaseAPI tessBaseAPI;
+    private String TEXT_OCR="";
     ProgressDialog loading;
 
     @Override
@@ -159,6 +174,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         CropImage.activity()
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .start(this);
+
+
+
         loading=new ProgressDialog(MainActivity.this);
         loading.setCancelable(false);
         loading.setMessage("Extracting Text...");
@@ -187,8 +205,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
-                prepareTessData();
+                Uri resultUri = Uri.parse(result.getUriFilePath(this,false));//getUri();
                 startOCR(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
@@ -207,114 +224,137 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     public void startOCR(Uri imageUri){
-        try{
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 4;
-            Bitmap bitmap =BitmapFactory.decodeFile(imageUri.getPath(), options);
-            try {
-                ExifInterface exif = new ExifInterface(imageUri.getPath());
-                int exifOrientation = exif.getAttributeInt(
-                        ExifInterface.TAG_ORIENTATION,
-                        ExifInterface.ORIENTATION_NORMAL);
 
-                Log.v("startOCR", "Orient: " + exifOrientation);
+        Bitmap bt=BitmapFactory.decodeFile(imageUri.getPath());
 
-                int rotate = 0;
-
-                switch (exifOrientation) {
-                    case ExifInterface.ORIENTATION_ROTATE_90:
-                        rotate = 90;
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_180:
-                        rotate = 180;
-                        break;
-                    case ExifInterface.ORIENTATION_ROTATE_270:
-                        rotate = 270;
-                        break;
-                }
-
-                Log.v("StartOCR", "Rotation: " + rotate);
-
-                if (rotate != 0) {
-
-                    // Getting width & height of the given image.
-                    int w = bitmap.getWidth();
-                    int h = bitmap.getHeight();
-
-                    // Setting pre rotate
-                    Matrix mtx = new Matrix();
-                    mtx.preRotate(rotate);
-
-                    // Rotating Bitmap
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
-                }
-
-                // Convert to ARGB_8888, required by tess
-                bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-
-            } catch (IOException e) {
-                Log.e("startOCR", "Couldn't correct orientation: " + e.toString());
-            }
-
-            //The extraction which takes time so we use progress dialog
-            String result = getTextTesseract(bitmap);
-
-            if(result.equals("")){result ="No Text Detected!";}
-
-            Intent intent =new Intent(this, TextActivity.class);
-            Bundle extras=new Bundle();
-            extras.putString("TITLE","");
-            extras.putString("BODY",result);
-            extras.putInt("id",-1);
-            intent.putExtras(extras);
-            loading.dismiss();
-            startActivity(intent);
-        }catch (Exception e){
-            Log.e("STARTocr", e.getMessage());
-        }
+        getTextOCR(bt);
+//        try{
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inSampleSize = 4;
+//            Bitmap bitmap =BitmapFactory.decodeFile(imageUri.getPath(), options);
+//            try {
+//                ExifInterface exif = new ExifInterface(imageUri.getPath());
+//                int exifOrientation = exif.getAttributeInt(
+//                        ExifInterface.TAG_ORIENTATION,
+//                        ExifInterface.ORIENTATION_NORMAL);
+//
+//                Log.v("startOCR", "Orient: " + exifOrientation);
+//
+//                int rotate = 0;
+//
+//                switch (exifOrientation) {
+//                    case ExifInterface.ORIENTATION_ROTATE_90:
+//                        rotate = 90;
+//                        break;
+//                    case ExifInterface.ORIENTATION_ROTATE_180:
+//                        rotate = 180;
+//                        break;
+//                    case ExifInterface.ORIENTATION_ROTATE_270:
+//                        rotate = 270;
+//                        break;
+//                }
+//
+//                Log.v("StartOCR", "Rotation: " + rotate);
+//
+//                if (rotate != 0) {
+//
+//                    // Getting width & height of the given image.
+//                    int w = bitmap.getWidth();
+//                    int h = bitmap.getHeight();
+//
+//                    // Setting pre rotate
+//                    Matrix mtx = new Matrix();
+//                    mtx.preRotate(rotate);
+//
+//                    // Rotating Bitmap
+//                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, false);
+//                }
+//
+//                // Convert to ARGB_8888, required by tess
+//                bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+//
+//            } catch (IOException e) {
+//                Log.e("startOCR", "Couldn't correct orientation: " + e.toString());
+//            }
+//
+//            //The extraction which takes time so we use progress dialog
+//            String result = getTextOCR(bitmap);
+//
+//            goIntent();
+//
+////            if(result.equals("")){result ="No Text Detected!";}
+//
+////            Intent intent =new Intent(this, TextActivity.class);
+////            Bundle extras=new Bundle();
+////            extras.putString("TITLE","");
+////            extras.putString("BODY",result);
+////            extras.putInt("id",-1);
+////            intent.putExtras(extras);
+////            loading.dismiss();
+////            startActivity(intent);
+//        }catch (Exception e){
+//            Log.e("STARTocr", e.getMessage());
+//        }
     }
 
-    private String getTextTesseract(Bitmap bitmap){
-        try{
-            tessBaseAPI = new TessBaseAPI();
-        }catch (Exception e){
-            Log.e("getTesstext", e.getMessage());
-        }
-        tessBaseAPI.init(DATA_PATH,"eng");
-        tessBaseAPI.setPageSegMode(TessBaseAPI.PageSegMode.PSM_AUTO);
-        tessBaseAPI.setImage(bitmap);
+    public void goIntent(){
+        String result =TEXT_OCR;
+        if(result.equals("")){result ="No Text Detected!";}
+        Intent intent =new Intent(this, TextActivity.class);
+        Bundle extras=new Bundle();
+        extras.putString("TITLE","");
+        extras.putString("BODY",result);
+        extras.putInt("id",-1);
+        intent.putExtras(extras);
+        loading.dismiss();
+        startActivity(intent);
+    }
+
+
+    private String getTextOCR(Bitmap bitmap){
         String retStr = "No result";
-        try{
-            retStr = tessBaseAPI.getUTF8Text();
-        }catch (Exception e){
-            Log.e("nn", e.getMessage());
+
+        TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+        InputImage image =InputImage.fromBitmap(bitmap,0);
+
+        if(image!=null) {
+            Task<Text> result =
+                    recognizer.process(image)
+                            .addOnSuccessListener(new OnSuccessListener<Text>() {
+                                @Override
+                                public void onSuccess(Text visionText) {
+                                    processTextML(visionText);
+                                }
+                            })
+                            .addOnFailureListener(
+                                    new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e("DEEBUGML",e.getMessage());
+                                        }
+                                    });
         }
-        tessBaseAPI.end();
         return retStr;
     }
 
-    private void prepareTessData(){
-        String lang="eng";
-        AssetManager assetManager = getApplicationContext().getAssets();
-        File file = new File(Environment.getExternalStorageDirectory()
-                + "/tesseract/tessdata", lang + ".traineddata");
-        if (!(file.exists())) {
-            try {
-                InputStream in = assetManager.open( lang+ ".traineddata");
-                String sdCardPath = Environment.getExternalStorageDirectory()+ "/tesseract/tessdata";
-                new File(sdCardPath).mkdirs();
-                File outFile = new File(sdCardPath + "/", lang + ".traineddata");
-                OutputStream out = new FileOutputStream(outFile);
-                byte [] buff = new byte[1024];
-                    int len ;
-                    while(( len = in.read(buff)) > 0){
-                        out.write(buff,0,len);
-                    }
-                    in.close();
-                    out.close();
-            } catch (IOException e) {
-                Log.e("tag", "Failed to copy asset file: " + lang
-                        + ".traineddata", e);
+    public void processTextML(Text result){
+        String resultText = result.getText();
+        TEXT_OCR=result.getText().trim();
+        goIntent();
+        for (Text.TextBlock block : result.getTextBlocks()) {
+            String blockText = block.getText();
+            Point[] blockCornerPoints = block.getCornerPoints();
+            Rect blockFrame = block.getBoundingBox();
+            for (Text.Line line : block.getLines()) {
+                String lineText = line.getText();
+                Point[] lineCornerPoints = line.getCornerPoints();
+                Rect lineFrame = line.getBoundingBox();
+                for (Text.Element element : line.getElements()) {
+                    String elementText = element.getText();
+                    Point[] elementCornerPoints = element.getCornerPoints();
+                    Rect elementFrame = element.getBoundingBox();
+                }
             }
         }
     }
