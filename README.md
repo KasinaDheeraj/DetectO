@@ -1,6 +1,6 @@
 # **DetectO**
 ### **Project Overview**
-- This repository is of a Text Detection app which was build using Tesseract API for text detection from pre-existing images or through camera capture and copying them to clipboard or saving them.     
+- This repository is of a Text Detection app which was build using ML kit for text detection from pre-existing images or through camera capture and copying them to clipboard or saving them.     
 - SQLite is used for saving the text detected and the saved text will be displayed on main screen with search feature enabled for searching through saved notes.
 - Image cropping will be enabled to crop to desired area for detection.
 - Apart from text detection user can also take notes and save them.  
@@ -12,8 +12,7 @@
 - Note a taking.
 - Text Search feature.
 - RecyclerView for displaying saved text.
-- Firebase Authentication with Login, Register and Forgot password.
-- Tesseract API.
+- Firebase ML kit and Authentication with Login, Register and Forgot password.
 
 ### **Screenshots**
 <img src="https://user-images.githubusercontent.com/58620100/136394000-25812528-a545-44cc-83b3-2509cd304d0e.jpg" height="550" /><img src="https://user-images.githubusercontent.com/58620100/136394011-837c908a-39ec-4bf1-b698-1b887846750c.jpg" height="550" />
